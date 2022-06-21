@@ -13,6 +13,18 @@
   }
 }
 
+.pocked-table > div > div.Component-horizontalScrollContainer-12 > div > div {
+  overflow: scroll;
+  max-height: 80vh;
+}
+
+.MuiTableBody-root > tr:first-child {
+  z-index: 10;
+  position: sticky;
+  top: 3.6rem;
+  background-color: #ffffff;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
