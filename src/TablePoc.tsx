@@ -64,6 +64,7 @@ const compareDate = (left: string, right: string) => {
   }
   return comparison;
 };
+
 const compareStatus = (left: string, right: string) => {
   const defaultOrder = ['FEITO', 'EM ANALISE', 'ERRADO'];
   return -(defaultOrder.indexOf(left) - defaultOrder.indexOf(right));
@@ -81,6 +82,22 @@ function sortData(data: Row[]) {
   return newData;
 }
 
+const exportExcel = (columns: any[], renderData: any[]) => {
+  const rows = [];
+  for (const rowData of renderData) {
+    const row: Record<string, any> = {};
+    for (const column of columns) {
+      row[column.title as string] = rowData[column.field];
+    }
+    rows.push(row)
+  }
+  const worksheet = XLSX.utils.json_to_sheet(rows, {
+    header: columns.map((column) => column.title),
+  });
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Relatório");
+  XLSX.writeFile(workbook, "Relatorio.xlsx");
+};
 
 export const TablePoc: FC<TablePocProps> = ({
   rows,
@@ -115,22 +132,7 @@ export const TablePoc: FC<TablePocProps> = ({
         filtering: true,
         pageSize: 10,
         pageSizeOptions: [10, 20, 50],
-        exportCsv: (columns, renderData) => {
-          const rows = [];
-          for (const rowData of renderData) {
-            const row: Record<string, any> = {};
-            for (const column of columns) {
-              row[column.title as string] = rowData[column.field];
-            }
-            rows.push(row)
-          }
-          const worksheet = XLSX.utils.json_to_sheet(rows, {
-            header: columns.map((column) => column.title),
-          });
-          const workbook = XLSX.utils.book_new();
-          XLSX.utils.book_append_sheet(workbook, worksheet, "Relatório")
-          XLSX.writeFile(workbook, "Relatorio.xlsx");
-        },
+        exportCsv: exportExcel,
       }}
       icons={tableIcons}
       localization={{
